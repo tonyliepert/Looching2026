@@ -17,7 +17,7 @@ class DroneThread extends Thread
 	SynthTable 		oscTable;
 	EnvelopePlayer 		droneEnvPlayer;
 	SynthEnvelope 		droneEnv;
-	LineOut 		droneOut;
+	VolumeOut 		droneOut;
 	double [] 		tData = new double[257];
 	Filter_LowPass 		droneFilt;
 	DelayUnit		del1;
@@ -47,7 +47,7 @@ class DroneThread extends Thread
 		del2= new DelayUnit(0.49);
 		droneEnvPlayer = new EnvelopePlayer();
 		filtEnvPlayer = new EnvelopePlayer();
-		droneOut = new LineOut();
+		droneOut = new VolumeOut();
 		del1inMixer = new AddUnit();
 		outAMixer = new AddUnit();
 		feedBack = new MultiplyUnit();
@@ -61,11 +61,11 @@ class DroneThread extends Thread
 		droneEnvPlayer.output.connect(outAMixer.inputA);
 		del2.output.connect(outAMixer.inputB);
 		del2.output.connect(feedBack.inputA);
-		outAMixer.output.connect(0, droneOut.input, 0);
+		outAMixer.output.connect(0, droneOut.left, 0);
 		droneEnvPlayer.output.connect(del1inMixer.inputA);
 		feedBack.output.connect(del1inMixer.inputB);
 		del1inMixer.output.connect(del1.input);
-		del1.output.connect(0, droneOut.input, 1);
+		del1.output.connect(0, droneOut.right, 0);
 		del1.output.connect(del2.input);
 
 		double[] data =

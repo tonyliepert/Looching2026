@@ -16,6 +16,8 @@ public class jlooch extends Applet implements AdjustmentListener, ActionListener
 	Scrollbar SeqScroll;
 	Scrollbar WarbleScroll;
 	Scrollbar BurstScroll;
+	Scrollbar VolumeScroll;
+	Label volumeReadout;
 	Button goButton;
 	Button [] onoffs = new Button[4];
 	int [] onoffstates = { 1, 1, 1, 1 };
@@ -29,13 +31,14 @@ public class jlooch extends Applet implements AdjustmentListener, ActionListener
 	BurstNote burstThread;
 
 	// window and control layout -- every slider column shares the same geometry
-	static final int W = 440, H = 600;
-	static final int COLW = W / 4;
+	// four voice columns plus a master volume column on the right
+	static final int COLW = 110;
+	static final int W = 5 * COLW, H = 600;
 	static final int SLIDEW = 36, SLIDEH = 360, SLIDEY = 100;
 	static final int ONOFFW = 30, ONOFFH = 26, ONOFFY = 64;
 	static final int LABELY = SLIDEY + SLIDEH + 24;
 	static final int GOW = 130, GOH = 32, GOY = LABELY + 22;
-	static final String [] labels = { "Drones", "Sequences", "Warbles", "Noises" };
+	static final String [] labels = { "Drones", "Sequences", "Warbles", "Noises", "Volume" };
 
 	public static void main(String args[])
 	{
@@ -72,6 +75,13 @@ public class jlooch extends Applet implements AdjustmentListener, ActionListener
 		SeqScroll    = makeSlider(1, "seqs",    79, new Color((float)0.2, (float)0.6, (float)0.7));
 		WarbleScroll = makeSlider(2, "warbles", 86, new Color((float)0.3, (float)0.5, (float)0.7));
 		BurstScroll  = makeSlider(3, "bursts",  88, new Color((float)0.4, (float)0.4, (float)0.7));
+		VolumeScroll = makeSlider(4, "volume",  0,  new Color((float)0.3, (float)0.3, (float)0.4));
+
+		volumeReadout = new Label("100%", Label.CENTER);
+		volumeReadout.setBounds(4*COLW + (COLW-60)/2, ONOFFY, 60, ONOFFH);
+		volumeReadout.setFont(new Font("Helvetica", Font.BOLD, 14));
+		volumeReadout.setBackground(Color.white);
+		add(volumeReadout);
 
 		Color fc = new Color((float)0.9, (float)0.1, (float)0.2);
 		bfont = new Font("Helvetica", Font.BOLD, 14);
@@ -168,6 +178,17 @@ public class jlooch extends Applet implements AdjustmentListener, ActionListener
 
 		value =  theScroll.getValue();
 		prob = (double)(100-value)/100.0;
+
+		// master volume works whether or not the voices are playing
+		if (theScroll == VolumeScroll) {
+			volumeReadout.setText((100-value) + "%");
+			try {
+				VolumeOut.setVolume(prob);
+			} catch(SynthException se) {
+				SynthAlert.showError(this,se);
+			}
+			return;
+		}
 
 		if (started == 1) {
 			if (theScroll.getName() == "drones") {
@@ -429,7 +450,9 @@ class myCanvas extends Canvas
 			}
 		}
 		g.drawImage(bstore, 0, 0, Color.white, this);
-		g.drawImage(loochimage, 6, jlooch.H - 56, Color.white, this);
+		// the icon is tiny (31x21), so show it at double size
+		int iw = loochimage.getWidth(this) * 2, ih = loochimage.getHeight(this) * 2;
+		g.drawImage(loochimage, 6, jlooch.H - ih - 8, iw, ih, Color.white, this);
 
 		g.setColor(Color.black);
 		lfont = new Font("Times", Font.BOLD, 22);
@@ -439,14 +462,19 @@ class myCanvas extends Canvas
 		// name each slider, centered under its column
 		lfont = new Font("Helvetica", Font.BOLD, 14);
 		g.setFont(lfont);
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < jlooch.labels.length; i++) {
 			drawCentered(g, jlooch.labels[i], i*jlooch.COLW + jlooch.COLW/2, jlooch.LABELY);
 		}
 
+		// set the volume column apart from the four voices
+		g.setColor(Color.lightGray);
+		g.drawLine(4*jlooch.COLW, jlooch.ONOFFY, 4*jlooch.COLW, jlooch.LABELY + 6);
+		g.setColor(Color.black);
+
 		lfont = new Font("Helvetica", Font.PLAIN, 11);
 		g.setFont(lfont);
-		drawCentered(g, "more", jlooch.W - 16, jlooch.SLIDEY + 12);
-		drawCentered(g, "less", jlooch.W - 16, jlooch.SLIDEY + jlooch.SLIDEH - 4);
+		drawCentered(g, "more", 18, jlooch.SLIDEY + 12);
+		drawCentered(g, "less", 18, jlooch.SLIDEY + jlooch.SLIDEH - 4);
 		g.drawString("Brad Garton", jlooch.W - 80, jlooch.H - 12);
 	}
 

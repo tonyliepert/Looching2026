@@ -77,7 +77,7 @@ class SeqThread extends Thread
 	public double		prob = 1.0;
 	boolean			go = true;
 	DoPulse			pulsey;
-	LineOut 		noteOut;
+	VolumeOut 		noteOut;
 	DelayUnit		noteDelay;
 	BradVerb1		bverb;
 	MultiplyUnit		bverbsend,directmult;
@@ -90,7 +90,7 @@ class SeqThread extends Thread
 	{
 		int i;
 
-		noteOut = new LineOut();
+		noteOut = new VolumeOut();
 		noteDelay = new DelayUnit(0.121);
 		bverb = new BradVerb1();
 		bverbsend = new MultiplyUnit();
@@ -127,8 +127,8 @@ class SeqThread extends Thread
 		panverbB.output.connect(1, addverbB.inputB, 0);
 		addverbB.output.connect(addoutB.inputB);
 
-		addoutA.output.connect(0, noteOut.input, 0);
-		addoutB.output.connect(0, noteOut.input, 1);
+		addoutA.output.connect(0, noteOut.left, 0);
+		addoutB.output.connect(0, noteOut.right, 0);
 	}
 
 	void stopSound()

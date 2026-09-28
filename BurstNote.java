@@ -80,12 +80,12 @@ class BurstThread extends Thread
 	double [] b1gains = { 0.3, 0.2, 0.4 };
 	double [] b2gains = { 0.4, 0.4, 0.1 };
 	AddUnit			bDel1in, bDel2in;
-	LineOut 		noteOut;
+	VolumeOut 		noteOut;
 
 	public BurstThread()
 	throws SynthException
 	{
-		noteOut = new LineOut();
+		noteOut = new VolumeOut();
 		burstey = new Burst();
 
 		bDel1 = new MultiTapDelay(b1dels, b1gains);
@@ -101,8 +101,8 @@ class BurstThread extends Thread
 		bDel1in.output.connect(bDel1.input);
 		bDel2in.output.connect(bDel2.input);
 
-		bDel1.output.connect(0, noteOut.input, 0);
-		bDel2.output.connect(0, noteOut.input, 1);
+		bDel1.output.connect(0, noteOut.left, 0);
+		bDel2.output.connect(0, noteOut.right, 0);
 	}
 
 	void stopSound()

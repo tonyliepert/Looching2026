@@ -140,7 +140,7 @@ class WarbleThread extends Thread
 	public double		prob = 1.0;
 	boolean			go = true;
 	Warble []		warbley = new Warble[3];
-	LineOut 		noteOut;
+	VolumeOut 		noteOut;
 	BusWriter[]		outBusWriterA = new BusWriter[3];
 	BusWriter[]		outBusWriterB = new BusWriter[3];
 	BusReader		outBusReaderA, outBusReaderB;
@@ -151,7 +151,7 @@ class WarbleThread extends Thread
 	{
 		int i;
 
-		noteOut = new LineOut();
+		noteOut = new VolumeOut();
 		for (i = 0; i < 3; i++)
 		{
 			warbley[i] = new Warble();
@@ -174,8 +174,8 @@ class WarbleThread extends Thread
 			outBusWriterB[i].busOutput.connect(outBusReaderB.busInput);
 		}
 
-		outBusReaderA.output.connect(0, noteOut.input, 0);
-		outBusReaderB.output.connect(0, noteOut.input, 1);
+		outBusReaderA.output.connect(0, noteOut.left, 0);
+		outBusReaderB.output.connect(0, noteOut.right, 0);
 	}
 
 	void stopSound()

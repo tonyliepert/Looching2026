@@ -24,15 +24,18 @@ folder in `%USERPROFILE%\.jdks`.
 
 Click **drono...** to start. Push a slider up to make that voice play more
 often, and use the **+** buttons to switch individual voices on or off.
+The **Volume** slider on the right sets the overall level.
 
 ## Changes from the 2001 original
 
 - Builds against the pure-Java JSyn in `lib/`. The old `com.softsynth.jsyn`
   API (`jsyn-old-api-20161206.jar`) runs on top of the modern engine
   (`jsyn-20171016.jar`), so no native plugin is needed.
-- `jlooch.java`: a larger 440×600 window with manual layout, so all four
+- `jlooch.java`: a larger 550×600 window with manual layout, so all four
   sliders are the same size. Also adds clear slider labels, bigger buttons,
   and a window/taskbar icon.
+- Master **Volume** slider. `VolumeOut.java` replaces each voice's `LineOut`
+  with a smoothed gain stage that all four voices share.
 - `looch.ico`: a Windows icon made from `loochicon.gif`, for desktop shortcuts.
 
 ## Credits and licensing
