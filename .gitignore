@@ -1,0 +1,6 @@
+# compiled output
+classes/
+
+# unused JSyn downloads
+lib/jsyn-complete-*.jar
+lib/jsyn-examples-*.zip
