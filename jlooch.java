@@ -158,10 +158,9 @@ public class jlooch extends Applet implements AdjustmentListener, ActionListener
 				if (onoffstates[3] == 1) {
 					burstThread.stopSound(); }
 			}
-			droneyThread.stop();
-			seqThread.stop();
-			warbleThread.stop();
-			burstThread.stop();
+			// the old droneyThread.stop() etc. calls are gone: Thread.stop() throws
+			// on modern Java, which aborted the window close. Those objects never
+			// run as threads anyway; stopSound() above silences the voices.
 			if (started == 1) {
 				Synth.stopEngine();
 			}
